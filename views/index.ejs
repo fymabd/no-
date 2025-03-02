@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | إدارة البوتات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0a0d14;
+            --secondary-bg: #151823;
+            --accent-color: #5c6bc0;
+            --gradient-start: #3949ab;
+            --gradient-end: #5c6bc0;
+            --success-color: #66bb6a;
+            --danger-color: #ef5350;
+            --warning-color: #ffa726;
+            --text-color: #ffffff;
+            --border-color: #2a2f3a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(92, 107, 192, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(57, 73, 171, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.1) 50%, transparent 55%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .server-counter {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .dashboard {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dashboard h2 {
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .server-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .server-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .server-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-start);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .server-info {
+            flex: 1;
+        }
+
+        .server-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .server-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: white;
+        }
+
+        .control-btn {
+            background: var(--accent-color);
+        }
+
+        .edit-btn {
+            background: var(--warning-color);
+        }
+
+        .delete-btn {
+            background: var(--danger-color);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .create-server-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .create-server-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(92, 107, 192, 0.3);
+        }
+
+        .refresh-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .refresh-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--accent-color);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(92, 107, 192, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg);
+            background: var(--gradient-start);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .server-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <i class="fas fa-user-circle"></i>
+                مرحباً، <%= user.username %>
+            </h1>
+            <p>
+          رصيدك الحالي :  $<%= balance %>
+            </p>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </a>
+        </header>
+
+        <div class="server-counter">
+            <p>
+                <i class="fas fa-server"></i>
+                عدد السيرفرات الحالية: 
+                <span class="count"><%= servers.length %></span>
+            </p>
+        </div>
+
+        <main>
+            <section class="dashboard">
+                <h2>
+                    <i class="fas fa-list"></i>
+                    السيرفرات الخاصة بك
+                </h2>
+
+                <% if (servers.length > 0) { %>
+                    <div class="server-grid">
+                        <% servers.forEach(server => { %>
+                            <div class="server-card">
+                                <div class="server-header">
+                                    <div class="server-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="server-info">
+                                        <h3><%= server %></h3>
+                                    </div>
+                                </div>
+                                <div class="server-actions">
+                                    <a href="/server/<%= encodeURIComponent(server) %>" class="action-btn control-btn">
+                                        <i class="fas fa-gamepad"></i>
+                                        تحكم
+                                    </a>
+                                    <a href="/edit-server/<%= encodeURIComponent(server) %>" class="action-btn edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                        تعديل
+                                    </a>
+                                    <button onclick="deleteServer('<%= encodeURIComponent(server) %>')" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                        حذف
+                                    </button>
+  
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <p>لا يوجد سيرفرات حالياً</p>
+                    </div>
+                <% } %>
+                
+                <a href="/create-server" class="create-server-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    إنشاء سيرفر جديد
+                </a>
+            </section>
+        </main>
+    </div>
+    
+    <div class="refresh-overlay" id="refreshOverlay">
+        <div class="refresh-spinner"></div>
+    </div>
+
+    <div class="refresh-btn" onclick="refreshPage()">
+        <i class="fas fa-sync-alt"></i>
+    </div>
+    
+    <footer>
+        <p>Powered By nova</p>
+    </footer>
+
+    <script>
+        function editServer(serverName) {
+            if (confirm('هل أنت متأكد من تعديل هذا السيرفر؟')) {
+                window.location.href = `/edit-server/${serverName}`;
+            }
+        }
+
+        function deleteServer(serverName) {
+            if (confirm(`هل أنت متأكد من حذف السيرفر "${serverName}"؟`)) {
+                const encodedServerName = encodeURIComponent(serverName);
+                
+                fetch(`/api/delete-server/${encodedServerName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert(data.error || 'حدث خطأ أثناء حذف السيرفر');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('حدث خطأ في الاتصال بالخادم');
+                });
+            }
+        }
+
+        function refreshPage() {
+            const overlay = document.getElementById('refreshOverlay');
+            overlay.style.display = 'flex';
+            overlay.style.animation = 'fadeIn 0.3s';
+            
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                refreshPage();
+            }
+        });
+    </script>
+</body>
+</html>

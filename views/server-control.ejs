@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - <%= serverName %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0a0d14;
+            --secondary-bg: #151823;
+            --accent-color: #5c6bc0;
+            --gradient-start: #3949ab;
+            --gradient-end: #5c6bc0;
+            --success-color: #66bb6a;
+            --danger-color: #ef5350;
+            --warning-color: #ffa726;
+            --text-color: #ffffff;
+            --border-color: #2a2f3a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(92, 107, 192, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(57, 73, 171, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.1) 50%, transparent 55%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .back-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .control-panel {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-indicator {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--danger-color);
+            transition: all 0.3s ease;
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-button {
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .start-btn { background: var(--success-color); }
+        .stop-btn { background: var(--danger-color); }
+        .restart-btn { background: var(--warning-color); }
+        .delete-btn { background: #ff5252; }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .console {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .console h2 {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .console-output {
+            height: 400px;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            color: #a0a0a0;
+            background: rgba(0, 0, 0, 0.2);
+            white-space: pre-wrap;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-server"></i> <%= serverName %></h1>
+            <a href="/dashboard" class="back-btn">
+                <i class="fas fa-arrow-right"></i> رجوع للوحة التحكم
+            </a>
+        </header>
+
+        <div class="control-panel">
+            <div class="status-indicator">
+                <span id="status-circle"></span>
+                <span id="status-text">جارٍ التحقق...</span>
+            </div>
+
+            <div class="control-buttons">
+                <button onclick="startServer()" class="control-button start-btn">
+                    <i class="fas fa-play"></i> تشغيل
+                </button>
+                <button onclick="stopServer()" class="control-button stop-btn">
+                    <i class="fas fa-stop"></i> إيقاف
+                </button>
+                <button onclick="restartServer()" class="control-button restart-btn">
+                    <i class="fas fa-sync"></i> إعادة تشغيل
+                </button>
+                <button onclick="deleteServer()" class="control-button delete-btn">
+                    <i class="fas fa-trash"></i> حذف
+                </button>
+            </div>
+
+            <div class="console">
+                <h2><i class="fas fa-terminal"></i> سجل التشغيل</h2>
+                <pre id="console-output" class="console-output"></pre>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered By Almjoud</p>
+    </footer>
+
+    <script>
+        let eventSource;
+        let currentProcessKey = null;
+        let statusTextElement = document.getElementById('status-text');
+        let statusCircleElement = document.getElementById('status-circle');
+        let consoleOutputElement = document.getElementById('console-output');
+        let notificationBar = document.getElementById('notificationBar');
+
+        function updateStatus(isRunning) {
+            if (isRunning) {
+                statusTextElement.innerText = 'Online';
+                statusCircleElement.style.backgroundColor = '#28a745';
+            } else {
+                statusTextElement.innerText = 'Offline';
+                statusCircleElement.style.backgroundColor = '#dc3545';
+            }
+        }
+
+        let isProcessing = false; // متغير للتحقق من حالة المعالجة
+
+        function startServer() {
+            if (isProcessing) {
+                consoleOutputElement.innerText += "جاري تشغيل البوت، يرجى الانتظار...\n";
+                return;
+            }
+
+            isProcessing = true;
+            const serverName = encodeURIComponent('<%= serverName %>');
+            consoleOutputElement.innerText += "جاري تشغيل البوت...\n";
+            
+            fetch(`/api/start-server/${serverName}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        consoleOutputElement.innerText += `${data.output || 'تم تشغيل البوت بنجاح'}\n`;
+                        currentProcessKey = data.processKey;
+                        if (currentProcessKey) {
+                            updateStatus(true);
+                            listenForOutput(currentProcessKey);
+                        }
+                    } else {
+                        consoleOutputElement.innerText += `خطأ: ${data.error || 'حدث خطأ غير معروف'}\n`;
+                    }
+                })
+                .catch(error => {
+                    consoleOutputElement.innerText += `خطأ في تشغيل البوت: ${error}\n`;
+                })
+                .finally(() => {
+                    isProcessing = false;
+                });
+        }
+
+        function stopServer() {
+            if (isProcessing) {
+                consoleOutputElement.innerText += "جاري إيقاف البوت، يرجى الانتظار...\n";
+                return;
+            }
+
+            isProcessing = true;
+            const serverName = encodeURIComponent('<%= serverName %>');
+            consoleOutputElement.innerText += "جاري إيقاف البوت...\n";
+
+            fetch(`/api/stop-server/${serverName}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    consoleOutputElement.innerText += `${data.output || 'تم إيقاف البوت بنجاح'}\n`;
+                    if (currentProcessKey) {
+                        updateStatus(false);
+                        if (eventSource) {
+                            eventSource.close();
+                        }
+                    }
+                })
+                .catch(error => {
+                    consoleOutputElement.innerText += `خطأ في إيقاف البوت: ${error}\n`;
+                })
+                .finally(() => {
+                    isProcessing = false;
+                });
+        }
+
+        function listenForOutput(processKey) {
+            if (eventSource) {
+                eventSource.close();
+            }
+            eventSource = new EventSource(`/api/stream-output/${processKey}`);
+
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    consoleOutputElement.innerText += data + '\n';
+                } catch (e) {
+                    consoleOutputElement.innerText += event.data + '\n';
+                }
+                consoleOutputElement.scrollTop = consoleOutputElement.scrollHeight;
+            };
+
+            eventSource.onerror = function(err) {
+                console.error('EventSource failed:', err);
+                updateStatus(false);
+                eventSource.close();
+            };
+        }
+
+        // Initial status check
+        window.onload = function() {
+            const serverName = encodeURIComponent('<%= serverName %>');
+            currentProcessKey = `<%= user.id %>-${serverName}`;
+            updateStatus(false);
+        }
+    </script>
+</body>
+</html>
